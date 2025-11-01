@@ -4,8 +4,8 @@
  */
 package com.tienda.controller;
 
-import com.tienda.domain.Categoria;
-import com.tienda.service.CategoriaService;
+import com.tienda.domain.Producto;
+import com.tienda.service.ProductoService;
 import com.tienda.service.FirebaseStorageService;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author erick
  */
 @Controller
-@RequestMapping("/categoria")
-public class CategoriaController {
+@RequestMapping("/producto")
+public class ProductoController {
 
     @Autowired
-    private CategoriaService categoriaService;
+    private ProductoService productoService;
 
     @Autowired
     private FirebaseStorageService firebaseStorageService;
@@ -36,64 +36,64 @@ public class CategoriaController {
     @Autowired
     private MessageSource messageSource;
 
-    @GetMapping("/listado") // https:localhost/categoria/listado
+    @GetMapping("/listado") // https:localhost/producto/listado
     public String inicio(Model model) {
-        var categorias = categoriaService.getCategorias(false);
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("totalCategorias", categorias.size());
-        return "/categoria/listado"; //las vistas que yo voy a crear en el html
+        var productos = productoService.getProductos(false);
+        model.addAttribute("productos", productos);
+        model.addAttribute("totalProductos", productos.size());
+        return "/producto/listado"; //las vistas que yo voy a crear en el html
     }
 
     
     
     
     @PostMapping("/modificar")
-    public String modificar(Categoria categoria, Model model) {
-        categoria = categoriaService.getCategoria(categoria);
-        model.addAttribute("categoria", categoria);
-        return "/categoria/modifica";  //la vista que tengo que generar en el html
+    public String modificar(Producto producto, Model model) {
+        producto = productoService.getProducto(producto);
+        model.addAttribute("producto", producto);
+        return "/producto/modifica";  //la vista que tengo que generar en el html
     }
 
     
     
     @PostMapping("/guardar")
-    public String guardar(Categoria categoria,
+    public String guardar(Producto producto,
             @RequestParam MultipartFile imagenFile,
             RedirectAttributes redirectAttributes) {
         if (!imagenFile.isEmpty()) { // Si no está vacío... pasaron una imagen...
-            categoriaService.save(categoria);
+            productoService.save(producto);
             String rutaImagen = firebaseStorageService
                     .cargaImagen(
                             imagenFile,
-                            "categoria",
-                            categoria.getIdCategoria());
-            categoria.setRutaImagen(rutaImagen);
+                            "producto",
+                            producto.getIdProducto());
+            producto.setRutaImagen(rutaImagen);
         }
-        categoriaService.save(categoria);
+        productoService.save(producto);
         redirectAttributes.addFlashAttribute("todoOk",
                 messageSource.getMessage("mensaje.actualizado",
                         null,
                         Locale.getDefault()));
-        return "redirect:/categoria/listado";
+        return "redirect:/producto/listado";
     }
 
     
     
     
     @PostMapping("/eliminar")
-    public String eliminar(Categoria categoria, RedirectAttributes redirectAttributes) {
-        categoria = categoriaService.getCategoria(categoria);
-        if (categoria == null) {  // La categoria no existe...
+    public String eliminar(Producto producto, RedirectAttributes redirectAttributes) {
+        producto = productoService.getProducto(producto);
+        if (producto == null) {  // La producto no existe...
             redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("categoria.error01",
+                    messageSource.getMessage("producto.error01",
                             null,
                             Locale.getDefault()));
         } else if (false) { // Esto se actualiza proximas semanas...
             redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("categoria.error02",
+                    messageSource.getMessage("producto.error02",
                             null,
                             Locale.getDefault()));
-        } else if (categoriaService.delete(categoria)) {
+        } else if (productoService.delete(producto)) {
             // Si se borró...
             redirectAttributes.addFlashAttribute("todoOk",
                     messageSource.getMessage("mensaje.eliminado",
@@ -101,11 +101,11 @@ public class CategoriaController {
                             Locale.getDefault()));
         } else {
             redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("categoria.error03",
+                    messageSource.getMessage("producto.error03",
                             null,
                             Locale.getDefault()));
         }
-        return "redirect:/categoria/listado";
+        return "redirect:/producto/listado";
     }
 
     
