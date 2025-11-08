@@ -33,7 +33,7 @@
                                     <label for="categoria">[[#{producto.categoria}]]</label>
                                     <select class="form-select" aria-label="Default select example" name="idCategoria" required="true">                                        
                                         <option th:each="categoria : ${categorias}" th:value="${categoria.idCategoria}">[[${categoria.descripcion}]]</option>
-                                    </select>
+                                     </select>
                                 </div>
                                 <div class='mb-3'>
                                     <label>[[#{producto.descripcion}]]</label>

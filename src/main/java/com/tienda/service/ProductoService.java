@@ -45,10 +45,24 @@ public class ProductoService {
             return false;
         }
     }
-    @Transactional (readOnly = true)
-    public Producto getProducto(Producto producto){
-    return productoRepository.findById(producto.getIdProducto()).orElse(null);
-  
+
+    @Transactional(readOnly = true)
+    public Producto getProducto(Producto producto) {
+        return productoRepository.findById(producto.getIdProducto()).orElse(null);
+
     }
+
+    //Lista de productos con precio inferior y superior para la consulta ampliada 
+    @Transactional(readOnly = true)
+    public List<Producto> findByPrecioBetweenOrderByDescripcion(double precioInf, double precioSup) {
+        return productoRepository.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
+    }
+    
+    //Lista de roductos con precio inferior y superior para la consulta JPAL
+    @Transactional(readOnly=true)    
+    public List<Producto> metodoJPQL(double precioInf, double precioSup) {
+        return productoRepository.metodoJPQL(precioInf, precioSup);
+    }
+    
 
 }
